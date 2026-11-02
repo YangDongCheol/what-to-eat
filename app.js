@@ -124,3 +124,4 @@ $("to-history").onclick = () => { renderHistory(); show("history"); };
 $("history-back").onclick = () => show("ask");
 
 renderQuestions();
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
