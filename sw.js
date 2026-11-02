@@ -1,9 +1,9 @@
 // Bump the version whenever any cached file changes, or phones keep serving the old copy.
-const CACHE = "wte-v1";
+const CACHE = "wte-v2";
 const FILES = ["./", "index.html", "style.css", "app.js", "logic.js", "menus.js", "manifest.json", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: "reload" })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (e) => {

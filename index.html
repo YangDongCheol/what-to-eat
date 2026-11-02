@@ -21,7 +21,7 @@
   <section id="result" hidden>
     <div class="menu">
       <div id="menu-emoji" class="emoji" aria-hidden="true"></div>
-      <h2 id="menu-name"></h2>
+      <h2 id="menu-name" tabindex="-1"></h2>
     </div>
     <p id="notice" aria-live="polite"></p>
     <button id="choose" class="primary">이걸로!</button>
@@ -30,7 +30,7 @@
   </section>
 
   <section id="history" hidden>
-    <h1>먹은 기록</h1>
+    <h1 id="history-title" tabindex="-1">먹은 기록</h1>
     <ul id="history-list"></ul>
     <p id="history-empty">아직 기록이 없어요</p>
     <button id="history-back" class="link">← 돌아가기</button>

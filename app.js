@@ -20,15 +20,17 @@ history = Array.isArray(history) ? history.filter(e => e && typeof e.name === "s
 let shown = [];
 let current = null;
 
-function show(id) {
+// focusId: element to move focus to so screen readers announce the new screen.
+function show(id, focusId) {
   for (const s of document.querySelectorAll("main > section")) s.hidden = s.id !== id;
   $("choose").disabled = false;
   window.scrollTo(0, 0);
+  if (focusId) $(focusId).focus();
 }
 
+// Built once; taps only flip aria-pressed so the focused button survives.
 function renderQuestions() {
   const box = $("questions");
-  box.replaceChildren();
   for (const [key, label, options] of QUESTIONS) {
     const fs = document.createElement("fieldset");
     const lg = document.createElement("legend");
@@ -40,7 +42,10 @@ function renderQuestions() {
       b.type = "button";
       b.textContent = opt;
       b.setAttribute("aria-pressed", String(answers[key] === opt));
-      b.onclick = () => { answers[key] = opt; renderQuestions(); };
+      b.onclick = () => {
+        answers[key] = opt;
+        for (const c of chips.children) c.setAttribute("aria-pressed", String(c === b));
+      };
       chips.append(b);
     }
     fs.append(lg, chips);
@@ -62,7 +67,7 @@ function showPick() {
     $("menu-emoji").textContent = "🤔";
     $("menu-name").textContent = "조건에 맞는 메뉴가 없어요";
   }
-  show("result");
+  show("result", "menu-name");
 }
 
 async function choose() {
@@ -120,7 +125,7 @@ $("go").onclick = () => {
 $("another").onclick = showPick;
 $("choose").onclick = choose;
 $("back").onclick = () => show("ask");
-$("to-history").onclick = () => { renderHistory(); show("history"); };
+$("to-history").onclick = () => { renderHistory(); show("history", "history-title"); };
 $("history-back").onclick = () => show("ask");
 
 renderQuestions();

@@ -1,8 +1,13 @@
-// Tiny test runner: works in test.html (browser) and run-tests.js (node).
-const results = [];
+// Tiny test runner: works in test.html (browser) and run-tests.js (node). Call report() after all tests.
+const results = [], pending = [];
 function test(name, fn) {
-  try { fn(); results.push({ name, ok: true }); }
-  catch (e) { results.push({ name, ok: false, msg: e.message }); }
+  const pass = () => results.push({ name, ok: true });
+  const fail = (e) => results.push({ name, ok: false, msg: e.message });
+  try {
+    const r = fn();
+    if (r && typeof r.then === "function") pending.push(r.then(pass, fail));
+    else pass();
+  } catch (e) { fail(e); }
 }
 function eq(a, b) {
   const x = JSON.stringify(a), y = JSON.stringify(b);
@@ -97,7 +102,7 @@ test("every way×group has a menu", () => {
 });
 
 // --- report ---
-(function report() {
+function report() {
   const failed = results.filter(r => !r.ok);
   const summary = `${failed.length ? "FAIL " + failed.length : "PASS " + results.length}/${results.length}`;
   if (typeof document !== "undefined") {
@@ -109,4 +114,4 @@ test("every way×group has a menu", () => {
     console.log(summary);
     if (failed.length) process.exitCode = 1;
   }
-})();
+}
