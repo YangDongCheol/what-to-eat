@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>오늘 뭐 먹지</title>
-<meta name="theme-color" content="#ff7a2f">
+<meta name="theme-color" content="#fff6ec">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css">
@@ -13,13 +13,15 @@
 <main>
   <section id="ask">
     <h1>오늘 뭐 먹지? 🍚</h1>
+    <p class="sub">세 가지만 골라주면 메뉴를 정해줄게요</p>
     <div id="questions"></div>
     <button id="go" class="primary">골라줘</button>
     <button id="to-history" class="link">기록 보기</button>
   </section>
 
   <section id="result" hidden>
-    <div class="menu">
+    <div id="menu" class="menu">
+      <span class="tag">오늘의 추천 🎉</span>
       <div id="menu-emoji" class="emoji" aria-hidden="true"></div>
       <h2 id="menu-name" tabindex="-1"></h2>
     </div>

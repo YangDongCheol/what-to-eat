@@ -4,6 +4,9 @@ const QUESTIONS = [
   ["taste", "어떤 게 당겨요?", ["든든", "가벼운", "얼큰", "상관없음"]],
   ["group", "누구랑?", ["혼자", "여럿"]],
 ];
+const EMOJI = {
+  배달: "🛵", 외식: "🍴", 집밥: "🏠", 든든: "🍖", 가벼운: "🥗", 얼큰: "🌶️", 상관없음: "🎲", 혼자: "🙋", 여럿: "👯",
+};
 const $ = (id) => document.getElementById(id);
 
 let store = null;
@@ -40,7 +43,8 @@ function renderQuestions() {
     for (const opt of options) {
       const b = document.createElement("button");
       b.type = "button";
-      b.textContent = opt;
+      b.textContent = `${EMOJI[opt]} ${opt}`;
+      b.setAttribute("aria-label", opt);
       b.setAttribute("aria-pressed", String(answers[key] === opt));
       b.onclick = () => {
         answers[key] = opt;
@@ -68,6 +72,9 @@ function showPick() {
     $("menu-name").textContent = "조건에 맞는 메뉴가 없어요";
   }
   show("result", "menu-name");
+  $("menu").classList.remove("pop");
+  void $("menu").offsetWidth; // restart the CSS animation on every pick
+  $("menu").classList.add("pop");
 }
 
 async function choose() {

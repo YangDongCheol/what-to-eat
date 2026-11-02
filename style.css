@@ -1,58 +1,87 @@
 :root {
-  --bg: #fffaf3; --fg: #2b2118; --muted: #8a7a6a;
-  --accent: #ff7a2f; --accent-fg: #fff;
-  --chip: #fff; --chip-border: #e8dccd; --chip-on: #ffe2cf;
+  --bg: #fff6ec; --glow: #ffe0c2; --fg: #3a2a1d; --muted: #8b7766;
+  --accent: #e8590c; --accent-fg: #fff; --accent-soft: #ffe3cc;
+  --card: #fff; --card-border: #f1dcc6;
+  --shadow: 0 6px 18px rgba(232, 89, 12, .14);
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1d1814; --fg: #f3ebe2; --muted: #a8988a;
-    --chip: #2a231d; --chip-border: #43382e; --chip-on: #5a3420;
+    --bg: #1f1812; --glow: #3a2416; --fg: #f6ece2; --muted: #b4a191;
+    --accent-soft: #5a3420;
+    --card: #2b221b; --card-border: #43372c;
+    --shadow: 0 6px 18px rgba(0, 0, 0, .35);
   }
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body {
-  margin: 0; background: var(--bg); color: var(--fg);
+  margin: 0; min-height: 100vh; color: var(--fg);
+  background: radial-gradient(circle at 50% -10%, var(--glow), var(--bg) 60%) no-repeat var(--bg);
   font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 main { max-width: 480px; margin: 0 auto; padding: 24px 16px 40px; }
-section { display: flex; flex-direction: column; gap: 12px; }
-h1 { font-size: 1.6rem; margin: 8px 0 12px; }
+section { display: flex; flex-direction: column; gap: 14px; }
+h1 { font-size: 1.7rem; margin: 8px 0 0; }
+.sub { margin: -6px 0 6px; color: var(--muted); }
 
-fieldset { border: 0; padding: 0; margin: 0 0 8px; }
-legend { font-weight: 600; margin-bottom: 8px; }
+fieldset {
+  border: 1px solid var(--card-border); border-radius: 20px; background: var(--card);
+  box-shadow: var(--shadow); padding: 14px 16px 16px; margin: 0;
+}
+legend { font-weight: 700; padding: 0 6px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chips button {
-  flex: 1 1 auto; min-height: 44px; padding: 0 14px; font-size: 1rem;
-  border: 1px solid var(--chip-border); border-radius: 999px;
-  background: var(--chip); color: var(--fg);
+  flex: 1 1 auto; min-height: 46px; padding: 0 14px; font-size: 1rem;
+  border: 2px solid var(--card-border); border-radius: 999px;
+  background: var(--card); color: var(--fg);
+  transition: transform .12s, background-color .12s, border-color .12s;
 }
-.chips button[aria-pressed="true"] { background: var(--chip-on); border-color: var(--accent); font-weight: 600; }
+.chips button[aria-pressed="true"] {
+  background: var(--accent-soft); border-color: var(--accent); font-weight: 700; transform: scale(1.03);
+}
 
 button { font: inherit; cursor: pointer; }
 section > button {
-  min-height: 52px; font-size: 1.1rem; border-radius: 14px;
-  border: 1px solid var(--chip-border); background: var(--chip); color: var(--fg);
+  min-height: 54px; font-size: 1.1rem; border-radius: 18px;
+  border: 2px solid var(--card-border); background: var(--card); color: var(--fg);
+  box-shadow: var(--shadow); transition: transform .12s;
 }
-section > button.primary { background: var(--accent); color: var(--accent-fg); border: 0; font-weight: 700; }
-section > button.link { min-height: 44px; background: none; border: 0; color: var(--muted); font-size: 1rem; }
+section > button:active { transform: scale(.97); }
+/* Bold 19px text on #e8590c: contrast 3.6:1, above the 3:1 AA bar for large text. */
+section > button.primary {
+  background: var(--accent); color: var(--accent-fg); border: 0;
+  font-size: 1.2rem; font-weight: 800; box-shadow: 0 8px 20px rgba(232, 89, 12, .32);
+}
+section > button.link { min-height: 44px; background: none; border: 0; box-shadow: none; color: var(--muted); font-size: 1rem; }
 button:disabled { opacity: .5; }
-[tabindex="-1"]:focus { outline: none; }
 button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+[tabindex="-1"]:focus { outline: none; }
 
-.menu { text-align: center; padding: 40px 0 16px; }
-.emoji { font-size: 5rem; line-height: 1; }
-.menu h2 { font-size: 2.2rem; margin: 16px 0 0; overflow-wrap: anywhere; }
-#notice { text-align: center; color: var(--muted); min-height: 1.5em; margin: 0; }
-.copy-text { user-select: all; font-weight: 700; color: var(--fg); padding: 2px 6px; border: 1px dashed var(--chip-border); }
-
-#history-list { list-style: none; padding: 0; margin: 0; }
-#history-list li {
-  display: flex; align-items: center; gap: 8px; padding: 12px 0;
-  border-bottom: 1px solid var(--chip-border);
+.menu { text-align: center; padding: 28px 0 8px; }
+.tag { display: inline-block; margin: 0 0 18px; padding: 4px 14px; border-radius: 999px; background: var(--accent-soft); font-size: .9rem; font-weight: 700; }
+.emoji {
+  display: grid; place-items: center; width: 9rem; height: 9rem; margin: 0 auto;
+  font-size: 5.5rem; line-height: 1; border-radius: 50%;
+  background: var(--accent-soft); box-shadow: var(--shadow);
 }
-#history-list .name { flex: 1; font-weight: 600; overflow-wrap: anywhere; }
+.pop .emoji { animation: pop .55s cubic-bezier(.3, 1.4, .5, 1); }
+@keyframes pop {
+  0% { transform: scale(.3) rotate(-14deg); opacity: 0; }
+  60% { transform: scale(1.12) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); }
+}
+@media (prefers-reduced-motion: reduce) { .pop .emoji { animation: none; } }
+.menu h2 { font-size: 2.3rem; margin: 20px 0 0; overflow-wrap: anywhere; }
+#notice { text-align: center; color: var(--muted); min-height: 1.5em; margin: 0; }
+.copy-text { user-select: all; -webkit-user-select: all; font-weight: 700; color: var(--fg); padding: 2px 6px; border: 1px dashed var(--card-border); }
+
+#history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+#history-list li {
+  display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 16px;
+  background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; box-shadow: var(--shadow);
+}
+#history-list .name { flex: 1; font-weight: 700; overflow-wrap: anywhere; }
 #history-list time { color: var(--muted); font-size: .9rem; }
 #history-list button { min-width: 44px; min-height: 44px; border: 0; background: none; color: var(--muted); font-size: 1.1rem; }
 #history-empty { color: var(--muted); }
