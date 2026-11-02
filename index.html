@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오늘 뭐 먹지</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <section id="ask">
+    <h1>오늘 뭐 먹지? 🍚</h1>
+    <div id="questions"></div>
+    <button id="go" class="primary">골라줘</button>
+    <button id="to-history" class="link">기록 보기</button>
+  </section>
+
+  <section id="result" hidden>
+    <div class="menu">
+      <div id="menu-emoji" class="emoji" aria-hidden="true"></div>
+      <h2 id="menu-name"></h2>
+    </div>
+    <p id="notice" aria-live="polite"></p>
+    <button id="choose" class="primary">이걸로!</button>
+    <button id="another">다른 거</button>
+    <button id="back" class="link">← 다시 고르기</button>
+  </section>
+
+  <section id="history" hidden>
+    <h1>먹은 기록</h1>
+    <ul id="history-list"></ul>
+    <p id="history-empty">아직 기록이 없어요</p>
+    <button id="history-back" class="link">← 돌아가기</button>
+  </section>
+</main>
+<script src="menus.js"></script>
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
