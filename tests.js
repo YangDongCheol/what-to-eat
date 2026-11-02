@@ -81,6 +81,21 @@ test("linkFor encodes", () => {
   eq(u, "https://www.youtube.com/results?search_query=" + encodeURIComponent("떡볶이 & 튀김 레시피"));
 });
 
+// --- menu data ---
+const WAYS = ["배달", "외식", "집밥"], TASTES = ["든든", "가벼운", "얼큰"], GROUPS = ["혼자", "여럿"];
+test("MENUS size", () => eq(MENUS.length >= 50 && MENUS.length <= 80, true));
+test("MENUS valid", () => {
+  const bad = MENUS.filter(m => !m.name || !m.emoji
+    || ![[m.ways, WAYS], [m.tastes, TASTES], [m.group, GROUPS]].every(([v, ok]) => v.length && v.every(x => ok.includes(x))));
+  eq(bad.map(m => m.name), []);
+  eq(new Set(MENUS.map(m => m.name)).size, MENUS.length);
+});
+test("every way×group has a menu", () => {
+  const empty = [];
+  for (const w of WAYS) for (const g of GROUPS) if (!pick(MENUS, A(w, "상관없음", g), [], [], T).menu) empty.push(w + g);
+  eq(empty, []);
+});
+
 // --- report ---
 (function report() {
   const failed = results.filter(r => !r.ok);
