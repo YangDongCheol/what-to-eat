@@ -51,6 +51,36 @@ test("no match → null", () => {
   eq(pick(M, A("집밥", "가벼운", "여럿"), [], [], T), { menu: null, cycled: false });
 });
 
+// --- storage & links ---
+const fake = (o = {}) => ({ getItem: k => (k in o ? o[k] : null), setItem: (k, v) => { o[k] = v; } });
+const broken = { getItem() { throw new Error("denied"); }, setItem() { throw new Error("denied"); } };
+
+test("loadJSON missing", () => eq(loadJSON(fake(), "history", []), []));
+test("loadJSON broken", () => eq(loadJSON(fake({ history: "{oops" }), "history", []), []));
+test("storage throws", () => {
+  eq(loadJSON(broken, "history", []), []);
+  saveJSON(broken, "history", [1]);
+});
+test("round trip", () => {
+  const s = fake();
+  saveJSON(s, "lastAnswers", { way: "외식" });
+  eq(loadJSON(s, "lastAnswers", null), { way: "외식" });
+});
+test("addEntry caps at 100", () => {
+  const h = Array.from({ length: 100 }, (_, i) => ({ name: "m" + i, at: 100 - i }));
+  const out = addEntry(h, "새거", 999);
+  eq(out.length, 100);
+  eq(out[0], { name: "새거", at: 999 });
+  eq(out.some(e => e.name === "m99"), false);
+  eq(h.length, 100);
+});
+test("linkFor 배달", () => eq(linkFor("배달", "김치찌개"), { type: "copy" }));
+test("linkFor 외식", () => eq(linkFor("외식", "김치찌개").url, "https://map.naver.com/p/search/" + encodeURIComponent("근처 김치찌개")));
+test("linkFor encodes", () => {
+  const u = linkFor("집밥", "떡볶이 & 튀김").url;
+  eq(u, "https://www.youtube.com/results?search_query=" + encodeURIComponent("떡볶이 & 튀김 레시피"));
+});
+
 // --- report ---
 (function report() {
   const failed = results.filter(r => !r.ok);

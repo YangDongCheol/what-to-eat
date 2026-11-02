@@ -23,3 +23,26 @@ function pick(menus, answers, history, shown, now, rand = Math.random) {
   const oldest = pool.reduce((a, b) => (lastAt[b.name] < lastAt[a.name] ? b : a));
   return { menu: oldest, cycled };
 }
+
+// Storage may be missing, full, or throw (private mode) — never let that break the app.
+function loadJSON(storage, key, fallback) {
+  try {
+    const raw = storage.getItem(key);
+    return raw == null ? fallback : JSON.parse(raw);
+  } catch { return fallback; }
+}
+
+function saveJSON(storage, key, value) {
+  try { storage.setItem(key, JSON.stringify(value)); } catch {}
+}
+
+const HISTORY_MAX = 100;
+function addEntry(history, name, now) {
+  return [{ name, at: now }, ...history].slice(0, HISTORY_MAX);
+}
+
+function linkFor(way, name) {
+  if (way === "외식") return { type: "open", url: "https://map.naver.com/p/search/" + encodeURIComponent("근처 " + name) };
+  if (way === "집밥") return { type: "open", url: "https://www.youtube.com/results?search_query=" + encodeURIComponent(name + " 레시피") };
+  return { type: "copy" };
+}
