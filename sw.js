@@ -1,20 +1,12 @@
-// Bump the version whenever any cached file changes, or phones keep serving the old copy.
-const CACHE = "wte-v3";
-const FILES = ["./", "index.html", "style.css", "app.js", "logic.js", "menus.js", "manifest.json", "icon-192.png", "icon-512.png"];
-
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: "reload" })))).then(() => self.skipWaiting()));
-});
+// One-shot cleanup worker for the old app: drop old wte- caches (never eik-), unregister, reload open windows.
+self.addEventListener("install", () => self.skipWaiting());
 
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("wte-")).map((k) => caches.delete(k))))
+      .then(() => self.registration.unregister())
+      .then(() => clients.matchAll({ type: "window" }))
+      .then((list) => Promise.all(list.map((c) => c.navigate(c.url))))
   );
-});
-
-self.addEventListener("fetch", (e) => {
-  if (e.request.method !== "GET") return;
-  e.respondWith(caches.match(e.request).then((hit) => hit || fetch(e.request)));
 });

@@ -1,45 +1,41 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>오늘 뭐 먹지</title>
+<title>Eat in Korea</title>
 <meta name="theme-color" content="#fff6ec">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css">
+<style>
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #fff6ec; color: #3a2a1d; font-family: system-ui, sans-serif; }
+  main { padding: 24px 16px; max-width: 480px; text-align: center; }
+  p { font-size: 1.375rem; line-height: 1.5; margin: 0 0 24px; }
+  a { display: inline-block; min-height: 44px; line-height: 44px; padding: 0 28px; border-radius: 22px; background: #e8590c; color: #fff; font-size: 1.125rem; font-weight: 700; text-decoration: none; }
+</style>
 </head>
 <body>
-<main>
-  <section id="ask">
-    <h1>오늘 뭐 먹지? 🍚</h1>
-    <p class="sub">세 가지만 골라주면 메뉴를 정해줄게요</p>
-    <div id="questions"></div>
-    <button id="go" class="primary">골라줘</button>
-    <button id="to-history" class="link">기록 보기</button>
-  </section>
-
-  <section id="result" hidden>
-    <div id="menu" class="menu">
-      <span class="tag">오늘의 추천 🎉</span>
-      <div id="menu-emoji" class="emoji" aria-hidden="true"></div>
-      <h2 id="menu-name" tabindex="-1"></h2>
-    </div>
-    <p id="notice" aria-live="polite"></p>
-    <button id="choose" class="primary">이걸로!</button>
-    <button id="another">다른 거</button>
-    <button id="back" class="link">← 다시 고르기</button>
-  </section>
-
-  <section id="history" hidden>
-    <h1 id="history-title" tabindex="-1">먹은 기록</h1>
-    <ul id="history-list"></ul>
-    <p id="history-empty">아직 기록이 없어요</p>
-    <button id="history-back" class="link">← 돌아가기</button>
-  </section>
+<main id="notice" hidden>
+  <p id="msg"></p>
+  <a id="link" href="https://github.com/YangDongCheol/eat-in-korea/releases/latest"></a>
 </main>
-<script src="menus.js"></script>
-<script src="logic.js"></script>
-<script src="app.js"></script>
+<script>
+function decide(userAgent, language) {
+  if (!/; wv\)/.test(userAgent)) return { action: "redirect" };
+  const l = String(language).slice(0, 2).toLowerCase();
+  return { action: "notice", lang: l === "ko" || l === "zh" ? l : "en" };
+}
+const TEXT = {
+  ko: ["새 앱(Eat in Korea)이 나왔어요. 새 앱을 설치해 주세요.", "새 앱 받기"],
+  en: ["A new app, Eat in Korea, is out. Please install the new app.", "Get the new app"],
+  zh: ["新应用 Eat in Korea 已上线，请安装新应用。", "获取新应用"],
+};
+const d = decide(navigator.userAgent, navigator.language);
+if (d.action === "redirect") location.replace("https://yangdongcheol.github.io/eat-in-korea/");
+else {
+  document.documentElement.lang = d.lang;
+  document.getElementById("msg").textContent = TEXT[d.lang][0];
+  document.getElementById("link").textContent = TEXT[d.lang][1];
+  document.getElementById("notice").hidden = false;
+}
+</script>
 </body>
 </html>
